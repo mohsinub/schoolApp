@@ -3,6 +3,19 @@ import clientPromise from '@/lib/mongodb';
 
 export async function POST(request) {
   try {
+    // Get the secret key from query params
+    const { searchParams } = new URL(request.url);
+    const secretKey = searchParams.get('key');
+    const validKey = process.env.SEED_SECRET_KEY;
+
+    // Validate secret key
+    if (!validKey || secretKey !== validKey) {
+      return Response.json(
+        { error: 'Unauthorized: Invalid or missing secret key' },
+        { status: 401 }
+      );
+    }
+
     const client = await clientPromise;
     const db = client.db('next-school');
     const usersCollection = db.collection('users');

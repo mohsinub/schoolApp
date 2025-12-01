@@ -10,22 +10,39 @@ The application uses MongoDB for user authentication with bcrypt password hashin
 ## Setup Instructions
 
 ### 1. Seed Test Users
-Once your MongoDB is configured and the app is running, seed the users collection by making a POST request:
+Once your MongoDB is configured and the app is running, seed the users collection by making a POST request with the secret key:
 
 ```bash
 # Local development
-curl -X POST http://localhost:3000/api/auth/seed
+curl -X POST "http://localhost:3000/api/auth/seed?key=your_seed_secret_key"
 
 # Production (Vercel)
-curl -X POST https://your-vercel-domain.vercel.app/api/auth/seed
+curl -X POST "https://your-vercel-domain.vercel.app/api/auth/seed?key=your_seed_secret_key"
 ```
 
 Or access via browser:
 ```
-http://localhost:3000/api/auth/seed
+http://localhost:3000/api/auth/seed?key=your_seed_secret_key
 ```
 
-### 2. Test Users Created
+**Note**: The `key` query parameter must match the `SEED_SECRET_KEY` environment variable.
+
+### 2. Environment Variables
+Add these to your `.env.local` (local) or Vercel dashboard (production):
+
+```
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/next-school
+NEXT_PUBLIC_API_URL=http://localhost:3000
+SEED_SECRET_KEY=your_secure_seed_secret_key_here
+```
+
+Generate a secure key for production:
+```bash
+# In Node.js or terminal
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+### 3. Test Users Created
 After seeding, two test users will be available:
 
 #### Admin User
@@ -89,10 +106,28 @@ Error Response (401):
 }
 ```
 
-### Seed Users (Development Only)
-**POST** `/api/auth/seed`
+### Seed Users (Protected Endpoint)
+**POST** `/api/auth/seed?key=YOUR_SECRET_KEY`
 
 Creates admin and teacher test users with hashed passwords.
+
+**Required**: `key` query parameter must match `SEED_SECRET_KEY` environment variable.
+
+Success Response (201):
+```json
+{
+  "success": true,
+  "message": "Test users created successfully",
+  "userIds": ["user_id_1", "user_id_2"]
+}
+```
+
+Error Response (401):
+```json
+{
+  "error": "Unauthorized: Invalid or missing secret key"
+}
+```
 
 ## Security Notes
 - Passwords are hashed using bcrypt with 10 salt rounds
