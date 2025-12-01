@@ -22,39 +22,35 @@ export function AuthProvider({ children }) {
     setIsLoading(false);
   }, []);
 
-  const login = (email, password) => {
-    // Dummy authentication
-    const dummyUsers = {
-      'admin@school.com': {
-        email: 'admin@school.com',
-        password: 'admin',
-        name: 'Admin User',
-        role: 'admin',
-        teacherClasses: [], // Admin sees all
-      },
-      'teacher@school.com': {
-        email: 'teacher@school.com',
-        password: 'teacher',
-        name: 'Teacher User',
-        role: 'teacher',
-        teacherClasses: ['KG1', 'KG2', 'Grade 1', 'Grade 2'], // Teacher sees these classes
-      },
-    };
+  const login = async (email, password) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const foundUser = dummyUsers[email];
-    if (foundUser && foundUser.password === password) {
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.error || 'Login failed' };
+      }
+
       const userData = {
-        email: foundUser.email,
-        name: foundUser.name,
-        role: foundUser.role,
-        teacherClasses: foundUser.teacherClasses,
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        role: data.user.role,
+        teacherClasses: data.user.teacherClasses,
       };
+
       setUser(userData);
       localStorage.setItem('schoolAppUser', JSON.stringify(userData));
       return { success: true };
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: 'An error occurred during login' };
     }
-
-    return { success: false, error: 'Invalid email or password' };
   };
 
   const logout = () => {

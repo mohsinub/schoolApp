@@ -24,7 +24,7 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
 
-    const result = login(email, password);
+    const result = await login(email, password);
     setIsLoading(false);
 
     if (result.success) {
