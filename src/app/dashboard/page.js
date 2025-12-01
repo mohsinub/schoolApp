@@ -3,8 +3,9 @@
 import React, { useMemo } from 'react';
 import { useGetStudentsQuery } from '@/store/studentApi';
 import Link from 'next/link';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { data: students = [], isLoading, error } = useGetStudentsQuery();
 
   const stats = useMemo(() => {
@@ -151,5 +152,13 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   );
 }

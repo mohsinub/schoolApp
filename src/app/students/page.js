@@ -1,7 +1,12 @@
 'use client';
 
 import StudentList from '@/components/StudentList';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function StudentsPage() {
-  return <StudentList />;
+  return (
+    <ProtectedRoute>
+      <StudentList />
+    </ProtectedRoute>
+  );
 }

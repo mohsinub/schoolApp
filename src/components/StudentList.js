@@ -2,12 +2,14 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { useGetStudentsQuery, useCreateStudentMutation, useDeleteStudentMutation } from '@/store/studentApi';
+import { useAuth } from '@/contexts/AuthContext';
 import StudentForm from './StudentForm';
 import StudentTable from './StudentTable';
 import Dashboard from './Dashboard';
 import FilterBar from './FilterBar';
 
 export default function StudentList() {
+  const { user } = useAuth();
   const { data: students = [], isLoading, error } = useGetStudentsQuery();
   const [createStudent] = useCreateStudentMutation();
   const [deleteStudent] = useDeleteStudentMutation();
@@ -15,15 +17,22 @@ export default function StudentList() {
   const [editingStudent, setEditingStudent] = useState(null);
   const [filters, setFilters] = useState({ status: 'Active' });
 
-  // Optimized filter logic
+  // Optimized filter logic with role-based filtering
   const filteredStudents = useMemo(() => {
-    return students.filter((student) => {
+    let baseStudents = students;
+    
+    // Filter by teacher's classes if teacher
+    if (user.role === 'teacher') {
+      baseStudents = students.filter((s) => user.teacherClasses.includes(s.grade));
+    }
+
+    return baseStudents.filter((student) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         return student[key] === value;
       });
     });
-  }, [students, filters]);
+  }, [students, filters, user]);
 
   const handleSubmit = async (formData) => {
     try {      

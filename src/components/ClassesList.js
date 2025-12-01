@@ -2,9 +2,18 @@
 
 import React, { useMemo, memo } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 function ClassesList({ students }) {
+  const { user } = useAuth();
+
   const { classes, stats } = useMemo(() => {
+    // Filter students based on role
+    let filteredStudents = students;
+    if (user.role === 'teacher') {
+      filteredStudents = students.filter((s) => user.teacherClasses.includes(s.grade));
+    }
+
     const gradeMap = {};
     let totalStudents = 0;
     let totalActive = 0;
@@ -12,7 +21,7 @@ function ClassesList({ students }) {
     let totalApplication = 0;
     let totalTcIssued = 0;
     
-    students.forEach((student) => {
+    filteredStudents.forEach((student) => {
       const grade = student.grade || 'Unknown';
       if (!gradeMap[grade]) {
         gradeMap[grade] = {
@@ -61,7 +70,7 @@ function ClassesList({ students }) {
         totalTcIssued,
       },
     };
-  }, [students]);
+  }, [students, user]);
 
   return (
     <div className="space-y-8">

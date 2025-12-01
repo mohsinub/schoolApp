@@ -1,5 +1,7 @@
 import './globals.css';
 import { ReduxProvider } from './providers';
+import { AuthProvider } from '@/contexts/AuthContext';
+import Navbar from '@/components/Navbar';
 
 export const metadata = {
   title: 'Next School - Student Management',
@@ -10,7 +12,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>{children}</ReduxProvider>
+        <AuthProvider>
+          <ReduxProvider>
+            <Navbar />
+            {children}
+          </ReduxProvider>
+        </AuthProvider>
       </body>
     </html>
   );

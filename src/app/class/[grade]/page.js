@@ -3,10 +3,13 @@
 import React, { useMemo, memo, use } from 'react';
 import Link from 'next/link';
 import { useGetStudentsQuery } from '@/store/studentApi';
+import { useAuth } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
-function ClassDetailsPage({ params }) {
+function ClassDetailsContent({ params }) {
   const resolvedParams = use(params);
   const { grade } = resolvedParams;
+  const { user } = useAuth();
   const { data: students = [], isLoading, error } = useGetStudentsQuery();
 
   const classData = useMemo(() => {
@@ -36,6 +39,24 @@ function ClassDetailsPage({ params }) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-lg text-red-600">Error loading data</div>
+      </div>
+    );
+  }
+
+  // Check if teacher has access to this class
+  const decodedGrade = decodeURIComponent(grade);
+  if (user.role === 'teacher' && !user.teacherClasses.includes(decodedGrade)) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium mb-4 inline-block">
+            ← Back to Home
+          </Link>
+          <div className="bg-red-100 border border-red-400 rounded-lg p-6 mt-4">
+            <h1 className="text-2xl font-bold text-red-800 mb-2">Access Denied</h1>
+            <p className="text-red-700">You don't have access to this class.</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -167,4 +188,10 @@ function ClassDetailsPage({ params }) {
   );
 }
 
-export default memo(ClassDetailsPage);
+export default function ClassDetailsPage({ params }) {
+  return (
+    <ProtectedRoute>
+      <ClassDetailsContent params={params} />
+    </ProtectedRoute>
+  );
+}

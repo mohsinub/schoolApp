@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 import { useGetStudentsQuery } from '@/store/studentApi';
+import { useAuth } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import ClassesList from '@/components/ClassesList';
 
-export default function Home() {
+function HomeContent() {
+  const { user } = useAuth();
   const { data: students = [], isLoading, error } = useGetStudentsQuery();
 
   if (isLoading) {
@@ -27,7 +30,8 @@ export default function Home() {
     <div className="min-h-screen bg-linear-to-br from-blue-500 to-purple-600 p-4 py-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">School Management System</h1>
+          <h1 className="text-5xl font-bold text-white mb-2">School Management System</h1>
+          <p className="text-xl text-blue-100 mb-4">Welcome, {user?.name}! 👋</p>
           <p className="text-xl text-blue-100">Manage students efficiently</p>
         </div>
 
@@ -65,6 +69,14 @@ export default function Home() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <ProtectedRoute>
+      <HomeContent />
+    </ProtectedRoute>
   );
 }
 
