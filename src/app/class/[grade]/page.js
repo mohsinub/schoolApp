@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useMemo, memo } from 'react';
+import React, { useMemo, memo, use } from 'react';
 import Link from 'next/link';
 import { useGetStudentsQuery } from '@/store/studentApi';
 
 function ClassDetailsPage({ params }) {
-  const { grade } = params;
+  const resolvedParams = use(params);
+  const { grade } = resolvedParams;
   const { data: students = [], isLoading, error } = useGetStudentsQuery();
 
   const classData = useMemo(() => {
