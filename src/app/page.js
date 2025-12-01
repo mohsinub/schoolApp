@@ -32,7 +32,6 @@ function HomeContent() {
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-2">School Management System</h1>
           <p className="text-xl text-blue-100 mb-4">Welcome, {user?.name}! 👋</p>
-          <p className="text-xl text-blue-100">Manage students efficiently</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -54,7 +53,7 @@ function HomeContent() {
               <div className="text-6xl mb-4">👥</div>
               <h2 className="text-2xl font-bold text-gray-900 mb-3">Students</h2>
               <p className="text-gray-600 mb-4">
-                Create, view, edit, and delete student records. Manage all student information.
+                Create, view, edit, and delete student records. Manage students info.
               </p>
               <div className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
                 Manage Students
