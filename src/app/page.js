@@ -1,18 +1,37 @@
 'use client';
 
 import Link from 'next/link';
+import { useGetStudentsQuery } from '@/store/studentApi';
+import ClassesList from '@/components/ClassesList';
 
 export default function Home() {
+  const { data: students = [], isLoading, error } = useGetStudentsQuery();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-lg text-red-600">Error loading data: {error.message}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full">
+    <div className="min-h-screen bg-linear-to-br from-blue-500 to-purple-600 p-4 py-8">
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4">School Management System</h1>
           <p className="text-xl text-blue-100">Manage students efficiently</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Dashboard Card */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <Link href="/dashboard">
             <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200 cursor-pointer">
               <div className="text-6xl mb-4">📊</div>
@@ -26,7 +45,6 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* Students List Card */}
           <Link href="/students">
             <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200 cursor-pointer">
               <div className="text-6xl mb-4">👥</div>
@@ -41,28 +59,9 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="mt-12 bg-white bg-opacity-10 rounded-lg p-6 text-white">
-          <h3 className="text-lg font-bold mb-4">Quick Features:</h3>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> Add new students with comprehensive information
-            </li>
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> Upload and manage student photos
-            </li>
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> Track students by grade and country
-            </li>
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> Edit and update student details
-            </li>
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> Delete student records
-            </li>
-            <li className="flex items-center">
-              <span className="mr-3">✓</span> View real-time statistics
-            </li>
-          </ul>
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Classes</h2>
+          <ClassesList students={students} />
         </div>
       </div>
     </div>
