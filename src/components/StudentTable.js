@@ -1,8 +1,11 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
+import StudentDetailModal from './StudentDetailModal';
 
 function StudentTable({ students, onEdit, onDelete }) {
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
   if (students.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -12,32 +15,33 @@ function StudentTable({ students, onEdit, onDelete }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-100 border-b border-gray-300">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Photo</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Roll No</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Grade</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Phone</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">WhatsApp</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Father</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Mother</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Country</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Home Address</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">GCC Address</th>
-              <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {students.map((student) => (
-              <tr
-                key={student._id}
-                className="hover:bg-gray-50 transition duration-150"
+    <>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-100 border-b border-gray-300">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Photo</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Roll No</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Grade</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Phone</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">WhatsApp</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Father</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Mother</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Country</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Home Address</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">GCC Address</th>
+                <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {students.map((student) => (
+                <tr
+                  key={student._id}
+                  className="hover:bg-gray-50 transition duration-150"
               >
                 <td className="px-6 py-4 text-sm">
                   {student.photo ? (
@@ -97,7 +101,14 @@ function StudentTable({ students, onEdit, onDelete }) {
                   {student.gccAddress}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <div className="flex gap-2 justify-center">
+                  <div className="flex gap-2 justify-center flex-wrap">
+                    <button
+                      onClick={() => setSelectedStudent(student)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium transition duration-200"
+                      title="View details and attendance"
+                    >
+                      Details
+                    </button>
                     <button
                       onClick={() => onEdit(student)}
                       className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition duration-200"
@@ -118,6 +129,15 @@ function StudentTable({ students, onEdit, onDelete }) {
         </table>
       </div>
     </div>
+
+      {/* Student Detail Modal */}
+      {selectedStudent && (
+        <StudentDetailModal
+          student={selectedStudent}
+          onClose={() => setSelectedStudent(null)}
+        />
+      )}
+    </>
   );
 }
 

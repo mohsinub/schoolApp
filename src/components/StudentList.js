@@ -7,6 +7,8 @@ import StudentForm from './StudentForm';
 import StudentTable from './StudentTable';
 import Dashboard from './Dashboard';
 import FilterBar from './FilterBar';
+import SearchBar from './SearchBar';
+import ExportImport from './ExportImport';
 
 export default function StudentList() {
   const { user } = useAuth();
@@ -16,6 +18,7 @@ export default function StudentList() {
   const [showForm, setShowForm] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [filters, setFilters] = useState({ status: 'Active' });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Optimized filter logic with role-based filtering
   const filteredStudents = useMemo(() => {
@@ -26,13 +29,29 @@ export default function StudentList() {
       baseStudents = students.filter((s) => user.teacherClasses.includes(s.grade));
     }
 
-    return baseStudents.filter((student) => {
+    // Apply filter criteria
+    let filtered = baseStudents.filter((student) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         return student[key] === value;
       });
     });
-  }, [students, filters, user]);
+
+    // Apply search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter((student) => {
+        return (
+          (student.name || '').toLowerCase().includes(term) ||
+          (student.rollNumber || '').toLowerCase().includes(term) ||
+          (student.phone || '').toLowerCase().includes(term) ||
+          (student.email || '').toLowerCase().includes(term)
+        );
+      });
+    }
+
+    return filtered;
+  }, [students, filters, searchTerm, user]);
 
   const handleSubmit = async (formData) => {
     try {      
@@ -58,6 +77,23 @@ export default function StudentList() {
     setEditingStudent(student);    
     setShowForm(true);
   }, []);
+
+  const handleImportStudents = async (importedStudents) => {
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const student of importedStudents) {
+      try {
+        await createStudent(student).unwrap();
+        successCount++;
+      } catch (error) {
+        console.error('Error importing student:', error);
+        errorCount++;
+      }
+    }
+
+    alert(`Import completed: ${successCount} students added, ${errorCount} failed`);
+  };
 
   if (isLoading) {
     return (
@@ -104,7 +140,15 @@ export default function StudentList() {
           </div>
         )}
 
-        <FilterBar students={students} onFilterChange={setFilters} currentFilters={filters} />
+        {/* Search, Filter, and Export/Import */}
+        <div className="mb-6 space-y-4">
+          <SearchBar students={students} onSearch={setSearchTerm} />
+          
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <FilterBar students={students} onFilterChange={setFilters} currentFilters={filters} />
+            <ExportImport students={filteredStudents} onImportSuccess={handleImportStudents} />
+          </div>
+        </div>
 
         <StudentTable
           students={filteredStudents}
