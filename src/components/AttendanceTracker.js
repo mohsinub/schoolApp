@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 export default function AttendanceTracker({ studentId, studentName }) {
   const [attendance, setAttendance] = useState([]);
@@ -8,27 +8,51 @@ export default function AttendanceTracker({ studentId, studentName }) {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedStatus, setSelectedStatus] = useState('Present');
 
-  // Fetch attendance records
-  useEffect(() => {
-    fetchAttendance();
-  }, [studentId]);
+  const fetchAttendance = useCallback(async () => {
+    console.log('📋 [AttendanceTracker] Fetching attendance for studentId:', studentId, { type: typeof studentId });
+    
+    if (!studentId) {
+      console.warn('⚠️ [AttendanceTracker] No studentId provided');
+      return;
+    }
 
-  const fetchAttendance = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/students/${studentId}/attendance`);
+      const url = `/api/students/${studentId}/attendance`;
+      console.log('🌐 [AttendanceTracker] Calling URL:', url);
+      
+      const response = await fetch(url);
+      console.log('📡 [AttendanceTracker] API Response status:', response.status);
+      
       const data = await response.json();
+      console.log('📦 [AttendanceTracker] API Response data:', data);
+
       if (data.success) {
-        setAttendance(data.records || []);
+        console.log('✅ [AttendanceTracker] Successfully fetched records:', data.records);
+        const recordsArray = Array.isArray(data.records) ? data.records : [];
+        console.log('📊 [AttendanceTracker] Setting attendance state to array of length:', recordsArray.length);
+        setAttendance(recordsArray);
+      } else {
+        console.error('❌ [AttendanceTracker] API returned error:', data.error);
+        setAttendance([]);
       }
     } catch (error) {
-      console.error('Error fetching attendance:', error);
+      console.error('🚨 [AttendanceTracker] Error fetching attendance:', error);
+      setAttendance([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [studentId]);
+
+  // Fetch attendance records when component mounts or studentId changes
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const handleMarkAttendance = async () => {
+    console.log('📝 [AttendanceTracker] Marking attendance for studentId:', studentId);
+    console.log('📝 [AttendanceTracker] Date:', selectedDate, 'Status:', selectedStatus);
+
     try {
       const response = await fetch(`/api/students/${studentId}/attendance`, {
         method: 'POST',
@@ -37,13 +61,21 @@ export default function AttendanceTracker({ studentId, studentName }) {
       });
 
       const data = await response.json();
+      console.log('📝 [AttendanceTracker] Mark attendance response:', data);
+
       if (data.success) {
-        fetchAttendance();
+        console.log('✅ [AttendanceTracker] Attendance marked successfully, refreshing list...');
         // Reset form
         setSelectedDate(new Date().toISOString().split('T')[0]);
+        // Re-fetch attendance records immediately
+        await fetchAttendance();
+      } else {
+        console.error('❌ [AttendanceTracker] Error response from API:', data.error);
+        alert('Error marking attendance: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
-      console.error('Error marking attendance:', error);
+      console.error('🚨 [AttendanceTracker] Error marking attendance:', error);
+      alert('Error marking attendance: ' + error.message);
     }
   };
 

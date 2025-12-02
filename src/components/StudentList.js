@@ -23,7 +23,7 @@ export default function StudentList() {
   // Optimized filter logic with role-based filtering
   const filteredStudents = useMemo(() => {
     let baseStudents = students;
-    
+
     // Filter by teacher's classes if teacher
     if (user.role === 'teacher') {
       baseStudents = students.filter((s) => user.teacherClasses.includes(s.grade));
@@ -54,7 +54,7 @@ export default function StudentList() {
   }, [students, filters, searchTerm, user]);
 
   const handleSubmit = async (formData) => {
-    try {      
+    try {
       await createStudent(formData).unwrap();
       setShowForm(false);
       setEditingStudent(null);
@@ -74,7 +74,7 @@ export default function StudentList() {
   };
 
   const handleEdit = useCallback((student) => {
-    setEditingStudent(student);    
+    setEditingStudent(student);
     setShowForm(true);
   }, []);
 
@@ -143,11 +143,8 @@ export default function StudentList() {
         {/* Search, Filter, and Export/Import */}
         <div className="mb-6 space-y-4">
           <SearchBar students={students} onSearch={setSearchTerm} />
-          
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <FilterBar students={students} onFilterChange={setFilters} currentFilters={filters} />
-            <ExportImport students={filteredStudents} onImportSuccess={handleImportStudents} />
-          </div>
+          <FilterBar students={students} onFilterChange={setFilters} currentFilters={filters} />
+          <ExportImport students={filteredStudents} onImportSuccess={handleImportStudents} />
         </div>
 
         <StudentTable
