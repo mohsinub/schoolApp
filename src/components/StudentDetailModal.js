@@ -44,7 +44,7 @@ function StudentDetailModal({ student, onClose }) {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold">{student.name}</h2>
               <div className="text-blue-100 text-xs sm:text-sm space-y-1 mt-2">
-                <p>📚 Roll: {student.rollNumber} | Grade: {student.grade}</p>
+                <p>📚 Roll: {student.rollNumber} | Grade: {student.grade} | Division: {student.division}</p>
                 <p>📞 {student.phone || 'N/A'} {student.whatsappNumber && `| WhatsApp: ${student.whatsappNumber}`}</p>
                 <p>
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(student.status || 'Active')}`}>
@@ -108,6 +108,10 @@ function StudentDetailModal({ student, onClose }) {
                   <div className="bg-white rounded p-2 sm:p-3 border border-gray-100">
                     <p className="text-xs text-gray-600 font-semibold">Grade</p>
                     <p className="font-medium text-gray-900 text-sm">{student.grade}</p>
+                  </div>
+                  <div className="bg-white rounded p-2 sm:p-3 border border-gray-100">
+                    <p className="text-xs text-gray-600 font-semibold">Division</p>
+                    <p className="font-medium text-gray-900 text-sm">{student.division}</p>
                   </div>
                   <div className="bg-white rounded p-2 sm:p-3 border border-gray-100">
                     <p className="text-xs text-gray-600 font-semibold">Status</p>

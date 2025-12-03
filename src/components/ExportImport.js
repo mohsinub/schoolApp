@@ -16,6 +16,7 @@ export default function ExportImport({ students, onImportSuccess }) {
     const headers = [
       'Name',
       'Grade',
+      'Division',
       'Roll Number',
       'Phone',
       'WhatsApp',
@@ -32,6 +33,7 @@ export default function ExportImport({ students, onImportSuccess }) {
     const rows = students.map((student) => [
       student.name || '',
       student.grade || '',
+      student.division || '',
       student.rollNumber || '',
       student.phone || '',
       student.whatsappNumber || '',
@@ -92,6 +94,7 @@ export default function ExportImport({ students, onImportSuccess }) {
           const student = {
             name: values[headers.indexOf('name')] || '',
             grade: values[headers.indexOf('grade')] || '',
+            division: values[headers.indexOf('division')] || '',
             rollNumber: values[headers.indexOf('roll number')] || '',
             phone: values[headers.indexOf('phone')] || '',
             whatsappNumber: values[headers.indexOf('whatsapp')] || '',

@@ -25,15 +25,16 @@ function StudentTable({ students, onEdit, onDelete }) {
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Roll No</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Grade</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Division</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Phone</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">WhatsApp</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Father</th>
+                {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Father</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Mother</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Country</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Home Address</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">GCC Address</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">GCC Address</th> */}
                 <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
               </tr>
             </thead>
@@ -61,6 +62,9 @@ function StudentTable({ students, onEdit, onDelete }) {
                 <td className="px-6 py-4 text-sm text-gray-600">
                   {student.grade}
                 </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {student.division}
+                  </td>
                 <td className="px-6 py-4 text-sm">
                   {(() => {
                     const statusStyles = {
@@ -85,7 +89,7 @@ function StudentTable({ students, onEdit, onDelete }) {
                 <td className="px-6 py-4 text-sm text-gray-600">
                   {student.whatsappNumber}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                {/* <td className="px-6 py-4 text-sm text-gray-600">
                   {student.fatherName}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">
@@ -99,7 +103,7 @@ function StudentTable({ students, onEdit, onDelete }) {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">
                   {student.gccAddress}
-                </td>
+                </td> */}
                 <td className="px-6 py-4 text-center">
                   <div className="flex gap-2 justify-center flex-wrap">
                     <button
