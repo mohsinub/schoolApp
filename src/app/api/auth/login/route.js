@@ -31,11 +31,13 @@ export async function POST(request) {
 
     if (!isPasswordValid) {
       return Response.json(
-        { error: 'Invalid email or password' },
+        { error: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
+    console.log('valid');
+    
     // Return user data (excluding password hash)
     const userData = {
       id: user._id.toString(),

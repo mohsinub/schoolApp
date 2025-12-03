@@ -78,22 +78,45 @@ export default function StudentList() {
     setShowForm(true);
   }, []);
 
+  // const handleImportStudents = async (importedStudents) => {
+  //   let successCount = 0;
+  //   let errorCount = 0;
+
+  //   for (const student of importedStudents) {
+  //     try {
+  //       await createStudent(student).unwrap();
+  //       successCount++;
+  //     } catch (error) {
+  //       console.error('Error importing student:', error);
+  //       errorCount++;
+  //     }
+  //   }
+
+  //   alert(`Import completed: ${successCount} students added, ${errorCount} failed`);
+  // };
+
   const handleImportStudents = async (importedStudents) => {
-    let successCount = 0;
-    let errorCount = 0;
+  // 1. Process requests concurrently using Promise.allSettled
+  // This allows all requests to fire without waiting for the previous one to finish.
+  const promises = importedStudents.map((student) => 
+    createStudent(student).unwrap()
+  );
 
-    for (const student of importedStudents) {
-      try {
-        await createStudent(student).unwrap();
-        successCount++;
-      } catch (error) {
-        console.error('Error importing student:', error);
-        errorCount++;
-      }
+  const results = await Promise.allSettled(promises);
+
+  // 2. Tally results
+  const successCount = results.filter(r => r.status === 'fulfilled').length;
+  const errorCount = results.filter(r => r.status === 'rejected').length;
+
+  // Optional: Log specific errors for debugging
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      console.error(`Row ${index + 1} failed:`, result.reason);
     }
+  });
 
-    alert(`Import completed: ${successCount} students added, ${errorCount} failed`);
-  };
+  alert(`Import completed: ${successCount} students added, ${errorCount} failed`);
+};
 
   if (isLoading) {
     return (
