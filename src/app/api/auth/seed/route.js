@@ -32,8 +32,8 @@ export async function POST(request) {
     }
 
     // Hash passwords
-    const adminPasswordHash = await bcrypt.hash('admin', 10);
-    const teacherPasswordHash = await bcrypt.hash('teacher', 10);
+    const adminPasswordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    const teacherPasswordHash = await bcrypt.hash(process.env.TEACHER_PASSWORD, 10);
 
     // Delete existing users if any
     await usersCollection.deleteMany({
