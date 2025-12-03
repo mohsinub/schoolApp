@@ -1,17 +1,17 @@
 'use client';
 
+import { useAuth } from '@/contexts/AuthContext';
 import React, { memo, useMemo } from 'react';
 
 function FilterBar({ students, onFilterChange, currentFilters = {} }) {
+  const user = useAuth();
   // Extract unique values for filters
   const filterOptions = useMemo(() => {
     const grades = [...new Set(students.map((s) => s.grade))].filter(Boolean).sort();
     const countries = [...new Set(students.map((s) => s.residingCountry))].filter(Boolean).sort();
-    const fathers = [...new Set(students.map((s) => s.fatherName))].filter(Boolean).sort();
-    const mothers = [...new Set(students.map((s) => s.motherName))].filter(Boolean).sort();
     const statuses = ['Active', 'Quit', 'Application', 'TC Issued'];
 
-    return { grades, countries, fathers, mothers, statuses };
+    return { grades, countries, statuses };
   }, [students]);
 
   return (
@@ -75,61 +75,13 @@ function FilterBar({ students, onFilterChange, currentFilters = {} }) {
           </select>
         </div>
 
-        {/* Father Name Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Father Name
-          </label>
-          <select
-            value={currentFilters.fatherName || ''}
-            onChange={(e) =>
-              onFilterChange((prev) => ({
-                ...prev,
-                fatherName: e.target.value || undefined,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-black"
-          >
-            <option value="">All Fathers</option>
-            {filterOptions.fathers.map((father) => (
-              <option key={father} value={father}>
-                {father}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Mother Name Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Mother Name
-          </label>
-          <select
-            value={currentFilters.motherName || ''}
-            onChange={(e) =>
-              onFilterChange((prev) => ({
-                ...prev,
-                motherName: e.target.value || undefined,
-              }))
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-black"
-          >
-            <option value="">All Mothers</option>
-            {filterOptions.mothers.map((mother) => (
-              <option key={mother} value={mother}>
-                {mother}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* Status Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Status
           </label>
           <select
-            value={currentFilters.status || 'Active'}
+            value={currentFilters.status || ''}
             onChange={(e) =>
               onFilterChange((prev) => ({
                 ...prev,

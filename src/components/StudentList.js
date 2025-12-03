@@ -144,7 +144,8 @@ export default function StudentList() {
         <div className="mb-6 space-y-4">
           <SearchBar students={students} onSearch={setSearchTerm} />
           <FilterBar students={students} onFilterChange={setFilters} currentFilters={filters} />
-          <ExportImport students={filteredStudents} onImportSuccess={handleImportStudents} />
+          {user.role === 'admin' && <ExportImport students={filteredStudents} onImportSuccess={handleImportStudents} />
+          }
         </div>
 
         <StudentTable

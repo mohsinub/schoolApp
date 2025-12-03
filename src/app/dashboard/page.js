@@ -5,6 +5,7 @@ import { useGetStudentsQuery } from '@/store/studentApi';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import ClassesList from '@/components/ClassesList';
 
 function AdminDashboard({ students }) {
   const stats = useMemo(() => {
